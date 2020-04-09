@@ -112,7 +112,7 @@ def main():
     )
     bot = Bot(
         request=req,
-        token=config.TOKEN,
+        token=conf.TOKEN,
         # base_url='https://telegg.ru/orig/bot',
     )
     updater = Updater(
