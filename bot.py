@@ -1,5 +1,5 @@
 import os
-import config
+import conf
 from telegram import Bot
 
 from telegram import InlineQueryResultArticle
