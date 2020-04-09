@@ -170,8 +170,8 @@ def keyboard_btns_handler(update, context):
             pass
         else:
             update.message.reply_text(
-                text='Не совсем понял твое сообщение... ☹️'
-                     'попробуй воспользоваться'
+                text='Не совсем понял твое сообщение... ☹️\n\n'
+                     'Попробуй воспользоваться'
                      'подготовленными кнопками с <b>клавиатуры</b> или '
                      'функциями из <b>главного меню</b>',
                 parse_mode=ParseMode.HTML,

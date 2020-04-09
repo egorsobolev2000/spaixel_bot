@@ -20,7 +20,6 @@ from bot_logic import *
 from modules.home_menu.home_logic import get_main_inline_menu
 from modules.keyboard.keyboard_logic import get_base_keyboard_btns
 
-
 search = Searcher()
 
 
@@ -29,19 +28,21 @@ def inline_handler(update: Update, context: CallbackContext):
     query = update.inline_query.query
     query = query.strip().lower()
 
-    # Список похожих имён монет
     results = []
-    names = search.parse_query(text=query)
-    prices = search.get_prices(names=names)
-    results.append(
-        InlineQueryResultArticle(
-            id=355,
-            title=f'{names} now?',
-            input_message_content=InputTextMessageContent(
-                message_text=f'{names} is {prices}$ now!',
-            ),
+    titles = search.parse_query(text=query)
+
+    for i, title in enumerate(titles):
+        results.append(
+            InlineQueryResultArticle(
+                id=i+1,
+                title=f'{title} - использовать?',
+                input_message_content=InputTextMessageContent(
+                    message_text=search.get_answer(title),
+                    parse_mode=ParseMode.HTML,
+                ),
+            )
         )
-    )
+
     # Ничего не нашлось
     if query and not results:
         results.append(
