@@ -96,6 +96,7 @@ def do_start(update: Update, context: CallbackContext):
 def do_echo(update: Update, context: CallbackContext):
     # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
     keyboard_btns_handler(update, context)
+    print(update.message.text)
 
 
 @log_error
