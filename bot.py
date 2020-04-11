@@ -17,6 +17,7 @@ from inline.search import Searcher
 from colors import ColorsPrint
 from bot_logic import *
 
+from inline.data import *
 from modules.home_menu.home_logic import get_main_inline_menu
 from modules.keyboard.keyboard_logic import get_base_keyboard_btns
 
@@ -29,12 +30,14 @@ def inline_handler(update: Update, context: CallbackContext):
     query = query.strip().lower()
 
     results = []
-    titles = search.parse_query(text=query)
+
+    titles = search.parse_query(query)
+    # print(query)
 
     for i, title in enumerate(titles):
         results.append(
             InlineQueryResultArticle(
-                id=i+1,
+                id=i + 1,
                 title=f'{title} - использовать?',
                 input_message_content=InputTextMessageContent(
                     message_text=search.get_answer(title),
@@ -104,6 +107,9 @@ def do_help(update: Update, context: CallbackContext):
     update.message.reply_text(
         text="Здесь будет информация о боте",
     )
+    t = "Без дополнительной оплаты могут быть внесены 5-10 изменений " \
+        "которые не затрагивают функциональную часть и не требуют"
+    clear_text_func(t)
     print(f'Обработка команды `/help` — ', ColorsPrint('OK', 'suc').do_colored())
 
 
