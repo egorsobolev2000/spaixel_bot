@@ -22,6 +22,10 @@ def get_base_inline_keyboard():
         [
             InlineKeyboardButton(MAIN_INLINE_BUTTON[CB_B_FAQ], callback_data=CB_B_FAQ),
         ],
+        [
+            InlineKeyboardButton(text="💭 Отзывы", url="https://vk.com/topic-157919190_41216100"),
+            InlineKeyboardButton(text="🖥 Перейти на сайт", url="https://vk.com/spaixel"),
+        ],
     ]
 
     return InlineKeyboardMarkup(keyboard)
