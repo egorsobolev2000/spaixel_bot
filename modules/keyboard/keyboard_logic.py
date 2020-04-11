@@ -11,10 +11,6 @@ def get_base_keyboard_btns():
             KeyboardButton(GET_MAIN_BOT_MENU),
         ],
         [
-            KeyboardButton(OPEN_WEB_SAIT),
-            KeyboardButton(VIEW_REVIEWS),
-        ],
-        [
             KeyboardButton(MANAGER_MESSAGE),
         ],
         [
