@@ -5,6 +5,8 @@ from telegram import Bot
 from telegram import InlineQueryResultArticle
 from telegram import InputTextMessageContent
 
+from modules.home_menu.home_logic import get_base_inline_keyboard
+
 from telegram.ext import Updater
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
@@ -17,7 +19,6 @@ from inline.search import Searcher
 from colors import ColorsPrint
 from bot_logic import *
 
-from inline.data import *
 from modules.home_menu.home_logic import get_main_inline_menu
 from modules.keyboard.keyboard_logic import get_base_keyboard_btns
 
@@ -107,9 +108,6 @@ def do_help(update: Update, context: CallbackContext):
     update.message.reply_text(
         text="Здесь будет информация о боте",
     )
-    t = "Без дополнительной оплаты могут быть внесены 5-10 изменений " \
-        "которые не затрагивают функциональную часть и не требуют"
-    clear_text_func(t)
     print(f'Обработка команды `/help` — ', ColorsPrint('OK', 'suc').do_colored())
 
 

@@ -5,6 +5,7 @@ from telegram.ext import CallbackContext
 from telegram import ReplyKeyboardRemove
 
 from debug import log_error
+from inline.data import INLINE_DATA
 from modules.keyboard import keyboard_btn as kbb, keyboard_logic as kbl
 from modules.home_menu.home_logic import get_main_inline_menu
 from modules.home_menu.home_menu_btn import *
@@ -29,27 +30,17 @@ def keyboard_btns_handler(update, context):
     if update.message.text == kbb.GET_MAIN_BOT_MENU:
         get_main_inline_menu(update)
 
-    # Если человек хочет перейти на сайт
-    elif update.message.text == kbb.OPEN_WEB_SAIT:
-        update.message.reply_text(
-            text='Кликни по ссылке... ➡️\n'
-                 'https://spaixel.com',
-        )
-
     # Если человек хочет связаться с менеджером
     elif update.message.text == kbb.MANAGER_MESSAGE:
         update.message.reply_text(
-            text='@sobolev_eg'
+            text='@sobolev_eg',
+            parse_mode=ParseMode.HTML,
         )
 
     # Если запрашивает контактные данные
     elif update.message.text == kbb.CONTACT_LEFT:
         update.message.reply_text(
-            text='📞 <b>WhatsApp</b> — <em>+7 938 538 69 30</em>\n'
-                 '📧 <b>E-mail</b> — <em>spaixel.info@gmail.com</em>\n'
-                 'Перейти в <a href="https://vk.com/spaixel"><em>Группу ВК</em></a>\n'
-                 'Наши <a href="https://vk.com/topic-157919190_41216100">'
-                 '<em>Отзывы</em></a>\n',
+            text=INLINE_DATA.get('Контакты'),
             parse_mode=ParseMode.HTML,
         )
 
@@ -121,7 +112,7 @@ def keyboard_btns_handler(update, context):
         )
         update.message.reply_text(
             text='Заполнение брифа прервано...\n\n'
-                 'Я записал тебя в черный список, но пока-что только карандашом\n',
+                 'Но я немного расстроился 😞\n',
             reply_markup=kbl.get_base_keyboard_btns(),
             parse_mode=ParseMode.HTML,
         )
@@ -276,6 +267,7 @@ def main_callback_handler(update: Update, context: CallbackContext):
             text=fb.FAQ[fb.C_B_FAQ_Q1][1],
             chat_id=update.callback_query.message.chat_id,
             reply_markup=fl.get_faq_inline_keyboard(),
+            parse_mode=ParseMode.HTML,
         )
 
     # FAQ №2
@@ -284,6 +276,7 @@ def main_callback_handler(update: Update, context: CallbackContext):
             text=fb.FAQ[fb.C_B_FAQ_Q2][1],
             chat_id=update.callback_query.message.chat_id,
             reply_markup=fl.get_faq_inline_keyboard(),
+            parse_mode=ParseMode.HTML,
         )
 
     # FAQ №3
@@ -292,6 +285,7 @@ def main_callback_handler(update: Update, context: CallbackContext):
             text=fb.FAQ[fb.C_B_FAQ_Q3][1],
             chat_id=update.callback_query.message.chat_id,
             reply_markup=fl.get_faq_inline_keyboard(),
+            parse_mode=ParseMode.HTML,
         )
 
     # FAQ №4
@@ -300,4 +294,5 @@ def main_callback_handler(update: Update, context: CallbackContext):
             text=fb.FAQ[fb.C_B_FAQ_Q4][1],
             chat_id=update.callback_query.message.chat_id,
             reply_markup=fl.get_faq_inline_keyboard(),
+            parse_mode=ParseMode.HTML,
         )
