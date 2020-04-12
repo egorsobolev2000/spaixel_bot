@@ -14,22 +14,23 @@ class Searcher:
         self.titles = list(self.data)
 
     @staticmethod
-    def __clear_text_func__(text):
+    def __clear_text_func__(dict_):
         """ Предварительная очистка текста от стоп-слов """
         text_to_terms = {}
 
-        for w in text:
-            # Разбиение слов
-            word_re = re.compile(r'[\W_]+')
+        word_re = re.compile(r'[\W_]+')
+        regex = re.compile('(<.*?[a-z].*?>)||[#%!*\"\':;=\(),*?%$#!]|[\\n]')
+
+        for w in dict_:
+            text_to_terms[dict_] = dict_.lower()
             # Очистка от мусора
-            symbols_re = re.compile(r'[<.*?>]|[</a-z>]|\d+|[#%!@*\"\':;=+\-()*?%$#@!]')
-            text_to_terms[text] = text.lower()
-            text_to_terms[text] = word_re.sub(' ', text_to_terms[text])
-            text_to_terms[text] = symbols_re.sub('', text_to_terms[text])
-            re.sub(r'[\W_]+', '', text_to_terms[text])
-            text_to_terms[text] = text_to_terms[text].split()
+            text_to_terms[dict_] = regex.sub('', text_to_terms[dict_])
+            # Разбиение слов
+            text_to_terms[dict_] = word_re.sub(' ', text_to_terms[dict_])
+            re.sub(r'[\W_]+', '', text_to_terms[dict_])
+            text_to_terms[dict_] = text_to_terms[dict_].split()
             # Очитска от стоп-слов
-            text_to_terms[text] = [w for w in text_to_terms[text] if w not in STOP_LIST]
+            text_to_terms[dict_] = [w for w in text_to_terms[dict_] if w not in STOP_LIST]
 
         return text_to_terms
 
@@ -75,7 +76,6 @@ class Searcher:
             for v in di[k]:
                 if re.findall(regex.lower(), v) and k not in potential_options:
                     potential_options.append(k)
-                    from colors import ColorsPrint
                     # print(ColorsPrint(f'KEY -- {k}', 'inf').do_colored())
                     # print(ColorsPrint(f'VALUE -- {v}', 'inf').do_colored())
         return potential_options
