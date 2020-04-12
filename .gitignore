@@ -1,10 +1,10 @@
 conf.py
+.gitignore
 
-/venv/
-/lib/
-/lib64/
-/include/
-/bin/
 /__pycache__/
 /.idea/
 
+/bin/
+/lib/
+/lib64/
+/venv/
