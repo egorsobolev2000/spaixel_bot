@@ -1,0 +1,10 @@
+conf.py
+
+/venv/
+/lib/
+/lib64/
+/include/
+/bin/
+/__pycache__/
+/.idea/
+
