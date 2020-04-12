@@ -4,6 +4,8 @@ from typing import Dict
 from inline.data import INLINE_DATA
 from inline.stopwords import STOP_LIST
 
+word_re = re.compile(r'[\W_]+')
+regex = re.compile('(<.*?[a-z].*?>)||[#%!-+*\"\':;=/(),*?%$#!]|[\\n]')
 
 class Searcher:
     """ Класс умного поиска по запросу """
@@ -17,9 +19,6 @@ class Searcher:
     def __clear_text_func__(dict_):
         """ Предварительная очистка текста от стоп-слов """
         text_to_terms = {}
-
-        word_re = re.compile(r'[\W_]+')
-        regex = re.compile('(<.*?[a-z].*?>)||[#%!*\"\':;=\(),*?%$#!]|[\\n]')
 
         for w in dict_:
             text_to_terms[dict_] = dict_.lower()
