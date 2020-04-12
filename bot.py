@@ -5,8 +5,6 @@ from telegram import Bot
 from telegram import InlineQueryResultArticle
 from telegram import InputTextMessageContent
 
-from modules.home_menu.home_logic import get_base_inline_keyboard
-
 from telegram.ext import Updater
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
@@ -14,7 +12,7 @@ from telegram.ext import CommandHandler
 from telegram.ext import CallbackQueryHandler
 from telegram.ext import InlineQueryHandler
 from telegram.utils.request import Request
-from inline.search import Searcher
+from inline.search import Searcher, regex
 
 from colors import ColorsPrint
 from bot_logic import *
@@ -29,23 +27,26 @@ search = Searcher()
 def inline_handler(update: Update, context: CallbackContext):
     query = update.inline_query.query
     query = query.strip().lower()
+    # Очистка запроса от мусора
+    query = regex.sub('', query)
 
     results = []
-
     titles = search.parse_query(query)
-    # print(query)
 
-    for i, title in enumerate(titles):
-        results.append(
-            InlineQueryResultArticle(
-                id=i + 1,
-                title=f'{title} - использовать?',
-                input_message_content=InputTextMessageContent(
-                    message_text=search.get_answer(title),
-                    parse_mode=ParseMode.HTML,
-                ),
+    # Выводить список только когда пользователь начал
+    # что-то печатать (не вываливает огромный список вариантов)
+    if query != '':
+        for i, title in enumerate(titles):
+            results.append(
+                InlineQueryResultArticle(
+                    id=i + 1,
+                    title=f'{title} - использовать?',
+                    input_message_content=InputTextMessageContent(
+                        message_text=search.get_answer(title),
+                        parse_mode=ParseMode.HTML,
+                    ),
+                )
             )
-        )
 
     # Ничего не нашлось
     if query and not results:
