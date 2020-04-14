@@ -1,3 +1,4 @@
+import datetime
 from telegram import Update
 from telegram import ParseMode
 from telegram import ChatAction
@@ -13,6 +14,7 @@ from modules.brif import brif_btn, brif_logic
 from modules.faq import faq_btn as fb, faq_logic as fl
 from modules.service import service_btn as sb, service_logic as sl
 from post.collect_data import info_collector
+from post.sendPost import send
 
 brif_status_check = ['brif_status_OFF']
 
@@ -140,6 +142,12 @@ def keyboard_btns_handler(update, context):
             reply_markup=kbl.get_base_keyboard_btns(),
             parse_mode=ParseMode.HTML,
         )
+
+        user = update.effective_user.username
+        d = datetime.datetime.today()
+        mail_text = f'В {d.hour}:{d.minute}:{d.second} - пользователь {user} ' \
+                    f'заполнил бриф-лист.'
+        send(user, mail_text)
         get_main_inline_menu(update)
 
 
