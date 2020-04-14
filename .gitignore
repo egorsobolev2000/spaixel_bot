@@ -8,5 +8,3 @@ conf.py
 /lib/
 /lib64/
 /venv/
-
-/post/logs/.gitkeep

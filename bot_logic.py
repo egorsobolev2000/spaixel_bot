@@ -12,6 +12,7 @@ from modules.home_menu.home_menu_btn import *
 from modules.brif import brif_btn, brif_logic
 from modules.faq import faq_btn as fb, faq_logic as fl
 from modules.service import service_btn as sb, service_logic as sl
+from post.collect_data import info_collector
 
 brif_status_check = ['brif_status_OFF']
 
@@ -176,6 +177,8 @@ def main_callback_handler(update: Update, context: CallbackContext):
 
     query = update.callback_query
     data = query.data
+    username = query.message.chat
+    info_collector(username, 'a', data)
 
 # --------------------------------------------------------------
 # 👇 Логика ответов бота при работе с БРИФОМ 👇

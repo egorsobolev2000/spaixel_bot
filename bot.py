@@ -16,7 +16,7 @@ from inline.search import Searcher, regex
 
 from colors import ColorsPrint
 from bot_logic import *
-from post.collect_data import message_collector
+from post.collect_data import info_collector
 from modules.home_menu.home_logic import get_main_inline_menu
 from modules.keyboard.keyboard_logic import get_base_keyboard_btns
 
@@ -93,7 +93,7 @@ def do_start(update: Update, context: CallbackContext):
 
     # Прикрепил к приветственному сообщению главное меню
     get_main_inline_menu(update)
-
+    info_collector(update.message)
     print(f'Обработка команды `/start` — ', ColorsPrint('OK', 'suc').do_colored())
 
 
@@ -101,9 +101,7 @@ def do_start(update: Update, context: CallbackContext):
 def do_echo(update: Update, context: CallbackContext):
     # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
     keyboard_btns_handler(update, context)
-    #print(update.message.from_user.language_code)
-    message_collector(update.message)
-    print(update.message.text)
+    info_collector(update.message)
 
 
 @log_error
