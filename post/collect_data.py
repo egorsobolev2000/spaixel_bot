@@ -2,6 +2,8 @@ import os
 import json
 import datetime
 
+from post.sendPost import send
+
 
 def JSONFile(path, data='data', d_or_l='dump'):
     if d_or_l == 'dump':
@@ -49,7 +51,7 @@ def info_collector(update, m_or_a='m', data='data'):
         users = JSONFile('./post/logs/USERS.json', d_or_l='load')
 
         if un in users.get('users'):
-            print('Файл уже был создан')
+            print('Пользователь уже был добавлен')
             if m_or_a == 'm':
                 message = update.text
                 editJSONFile(un, 'messages', message)
@@ -58,6 +60,7 @@ def info_collector(update, m_or_a='m', data='data'):
                 editJSONFile(un, 'actions', action)
         else:
             print('Создается файл')
+            send(username)
             writeJSONFile(update)
             users.get('users').append(username)
             JSONFile('./post/logs/USERS.json', users)
