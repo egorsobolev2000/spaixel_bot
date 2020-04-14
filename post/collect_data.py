@@ -6,6 +6,9 @@ from post.sendPost import send
 
 
 def JSONFile(path, data='data', d_or_l='dump'):
+    """ Функция непосредственного вызова и
+        работы с JSON файлом """
+
     if d_or_l == 'dump':
         with open(path, 'w', encoding='utf-8') as outfile:
             json.dump(data, outfile, indent=3)
@@ -17,6 +20,9 @@ def JSONFile(path, data='data', d_or_l='dump'):
 
 
 def writeJSONFile(update):
+    """ Функция посредник -> создает
+        шаблон JSON профиля пользователя """
+
     d = datetime.datetime.today()
 
     if update.from_user.username is None:
@@ -31,16 +37,21 @@ def writeJSONFile(update):
         "actions": [],
     }
 
+    # Вызываю запись в JSON файл
     JSONFile(f'./post/logs/{update.from_user.username}${d}.json', data)
 
 
 def editJSONFile(username, key, value):
+    """ Функция посредник -> редактирует
+        шаблон JSON профиля пользователя """
+
     d = datetime.datetime.today()
     logs = os.listdir('./post/logs/')
     for file in logs:
         if file.split('$')[0] == username:
             data = JSONFile(f'./post/logs/{file}', d_or_l='load')
             data.get(key).append({f'{d.hour}:{d.minute}:{d.second}': value})
+            # Вызываю запись в JSON файл
             JSONFile(f'./post/logs/{file}', data)
             break
 
@@ -63,6 +74,7 @@ def info_collector(update, m_or_a='m', data='data'):
             send(username)
             writeJSONFile(update)
             users.get('users').append(username)
+            # Вызываю запись в JSON файл
             JSONFile('./post/logs/USERS.json', users)
 
     if m_or_a == 'a':
