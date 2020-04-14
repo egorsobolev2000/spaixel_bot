@@ -19,51 +19,59 @@ from bot_logic import *
 from post.collect_data import info_collector
 from modules.home_menu.home_logic import get_main_inline_menu
 from modules.keyboard.keyboard_logic import get_base_keyboard_btns
+from post.collect_data import JSONFile
 
 search = Searcher()
 
 
 @log_error
 def inline_handler(update: Update, context: CallbackContext):
-    query = update.inline_query.query
-    query = query.strip().lower()
-    # Очистка запроса от мусора
-    query = regex.sub('', query)
+    """ Функкия логики и доступности Inline режима """
 
-    results = []
-    titles = search.parse_query(query)
+    users = JSONFile('./inline/inline_user.json', d_or_l='load')
+    user = update.inline_query.from_user.username
 
-    # Выводить список только когда пользователь начал
-    # что-то печатать (не вываливает огромный список вариантов)
-    if query != '':
-        for i, title in enumerate(titles):
+    # Проверка -> Должен ли этот пользователь вызывать Inline режим
+    if user in users.get('users'):
+        query = update.inline_query.query
+        query = query.strip().lower()
+        # Очистка запроса от мусора
+        query = regex.sub('', query)
+
+        results = []
+        titles = search.parse_query(query)
+
+        # Выводить список только когда пользователь начал
+        # что-то печатать (не вываливает огромный список вариантов)
+        if query != '':
+            for i, title in enumerate(titles):
+                results.append(
+                    InlineQueryResultArticle(
+                        id=i + 1,
+                        title=f'{title} - использовать?',
+                        input_message_content=InputTextMessageContent(
+                            message_text=search.get_answer(title),
+                            parse_mode=ParseMode.HTML,
+                        ),
+                    )
+                )
+
+        # Ничего не нашлось
+        if query and not results:
             results.append(
                 InlineQueryResultArticle(
-                    id=i + 1,
-                    title=f'{title} - использовать?',
+                    id=999,
+                    title='Ничего не нашлось',
                     input_message_content=InputTextMessageContent(
-                        message_text=search.get_answer(title),
-                        parse_mode=ParseMode.HTML,
+                        message_text=f'Ничего не нашлось по запросу "{query}"',
                     ),
                 )
             )
 
-    # Ничего не нашлось
-    if query and not results:
-        results.append(
-            InlineQueryResultArticle(
-                id=999,
-                title='Ничего не нашлось',
-                input_message_content=InputTextMessageContent(
-                    message_text=f'Ничего не нашлось по запросу "{query}"',
-                ),
-            )
+        update.inline_query.answer(
+            results=results,
+            cache_time=10,
         )
-
-    update.inline_query.answer(
-        results=results,
-        cache_time=10,
-    )
 
 
 @log_error
