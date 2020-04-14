@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from post.accesses import MAIL, PASSWORD
 
 
-def send(username):
+def send(username, message='s'):
 
     login = MAIL
     password = PASSWORD
@@ -13,8 +13,13 @@ def send(username):
     msg = MIMEMultipart()
     msg['From'] = login
     msg['To'] = login
-    msg['Subject'] = f'Новый пользователь бота @{username}'
-    body = f'Зафиксирована активность нового пользователя бота @{username}'
+    if message == 's':
+        msg['Subject'] = f'Новый пользователь бота @{username} 👍'
+        body = f'Зафиксирована активность нового пользователя бота @{username}'
+    else:
+        msg['Subject'] = f'@{username} заполнил бриф лист 📮'
+        body = message
+
     msg.attach(MIMEText(body, 'plain'))
 
     server = smtplib.SMTP('smtp.gmail.com', 587)
