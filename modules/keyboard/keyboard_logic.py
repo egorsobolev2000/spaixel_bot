@@ -15,7 +15,7 @@ def get_base_keyboard_btns():
         ],
         [
             KeyboardButton(CONTACT_LEFT),
-            KeyboardButton(HELP_RIGHT),
+            KeyboardButton(REQ_BTN),
         ],
     ]
     return ReplyKeyboardMarkup(

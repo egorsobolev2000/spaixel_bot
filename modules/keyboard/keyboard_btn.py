@@ -5,5 +5,5 @@
 GET_MAIN_BOT_MENU = "📜 Главное меню"
 MANAGER_MESSAGE = "📯 Связаться с разработчиком"
 CONTACT_LEFT = "☎️ Контакты"
-HELP_RIGHT = "❓ Помощь"
+REQ_BTN = "🛎 Оставить заявку"
 BACK = '◀️ Назад'

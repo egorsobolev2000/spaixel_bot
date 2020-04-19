@@ -14,10 +14,10 @@ def send(username, message='s'):
     msg['From'] = login
     msg['To'] = login
     if message == 's':
-        msg['Subject'] = f'Новый пользователь бота @{username} 👍'
+        msg['Subject'] = f'Новый пользователь @{username} 👍'
         body = f'Зафиксирована активность нового пользователя бота @{username}'
     else:
-        msg['Subject'] = f'@{username} заполнил бриф лист 📮'
+        msg['Subject'] = f'📮 Новая заявка с бота от @{username}'
         body = message
 
     msg.attach(MIMEText(body, 'plain'))

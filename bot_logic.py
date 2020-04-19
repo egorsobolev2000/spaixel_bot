@@ -24,6 +24,9 @@ def keyboard_btns_handler(update, context):
     """ Обработка запросов с клавиатуры
     бота + стандартный ответ бота """
 
+    user = update.effective_user.username
+    d = datetime.datetime.today()
+
 
 # --------------------------------------------------------------
 # 👇 Логика ответов бота для кнопок меню главной клавиатуры 👇
@@ -46,6 +49,16 @@ def keyboard_btns_handler(update, context):
             text=INLINE_DATA.get('Контакты'),
             parse_mode=ParseMode.HTML,
         )
+
+    # Хочет оставить заявку
+    elif update.message.text == kbb.REQ_BTN:
+        update.message.reply_text(
+            text="Отправил заявку на почту разработчика ✅"
+        )
+
+        mail_text = f"Пользователь {user} оставил заявку в боте - {d}"
+        send(user, mail_text)
+        
 
 
 # --------------------------------------------------------------
@@ -142,9 +155,7 @@ def keyboard_btns_handler(update, context):
             reply_markup=kbl.get_base_keyboard_btns(),
             parse_mode=ParseMode.HTML,
         )
-
-        user = update.effective_user.username
-        d = datetime.datetime.today()
+        
         mail_text = f'В {d.hour}:{d.minute}:{d.second} - пользователь {user} ' \
                     f'заполнил бриф-лист.'
         send(user, mail_text)
