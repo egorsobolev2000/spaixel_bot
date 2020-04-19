@@ -11,7 +11,7 @@ def JSONFile(path, data='data', d_or_l='dump'):
 
     if d_or_l == 'dump':
         with open(path, 'w', encoding='utf-8') as outfile:
-            json.dump(data, outfile, indent=3)
+            json.dump(data, outfile, ensure_ascii=False, indent=3)
 
     if d_or_l == 'load':
         with open(path, "r") as read_file:
