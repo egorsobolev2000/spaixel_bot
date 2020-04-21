@@ -58,7 +58,6 @@ def keyboard_btns_handler(update, context):
 
         mail_text = f"Пользователь {user} оставил заявку в боте - {d}"
         send(user, mail_text)
-        
 
 
 # --------------------------------------------------------------
@@ -177,9 +176,12 @@ def keyboard_btns_handler(update, context):
         # Вызов функции которая возвращает главное меню
         get_main_inline_menu(update)
 
+    # Ответ бота в других случаях
     else:
+        # Если человек сейчас зполняет БРИФ
         if brif_status_check[0] == 'brif_status_ON':
             pass
+        # Ответ бота в любом другом случае
         else:
             update.message.reply_text(
                 text='Не совсем понял твое сообщение... ☹️\n\n'
@@ -250,17 +252,33 @@ def main_callback_handler(update: Update, context: CallbackContext):
             parse_mode=ParseMode.HTML,
         )
 
-    elif data == sb.CB_B_SITE_DEVELOPMENT \
-            or data == sb.CB_B_BOT_DEVELOPMENT \
-            or data == sb.CB_B_DESIGN_DEVELOPMENT \
-            or data == sb.CB_B_LOGO_DEVELOPMENT \
-            or data == sb.CB_B_DESIGN_VK_GROUPS \
-            or data == sb.CB_B_MARKETING:
-
+    # Вызов описания услуг по разработке дизайна
+    elif data == sb.CB_B_DESIGN_DEVELOPMENT:
         context.bot.send_message(
-            text=sb.SERVICE_INFO[sb.FIST_EX],
+            text=INLINE_DATA.get(sb.SERVICE_TITLE[sb.CB_B_DESIGN_DEVELOPMENT]),
             chat_id=update.callback_query.message.chat_id,
+            reply_markup=sl.get_more_inline_keyboard('https://spaixel.com/page/design'),
+            parse_mode=ParseMode.HTML,
         )
+
+    # Вызов описания услуг по разработке сайта
+    elif data == sb.CB_B_SITE_DEVELOPMENT:
+        context.bot.send_message(
+            text=INLINE_DATA.get(sb.SERVICE_TITLE[sb.CB_B_SITE_DEVELOPMENT]),
+            chat_id=update.callback_query.message.chat_id,
+            reply_markup=sl.get_more_inline_keyboard('https://spaixel.com/page/development'),
+            parse_mode=ParseMode.HTML,
+        )
+
+    # Вызов описания услуг по разработке логотипа
+    elif data == sb.CB_B_LOGO_DEVELOPMENT:
+        context.bot.send_message(
+            text=INLINE_DATA.get(sb.SERVICE_TITLE[sb.CB_B_LOGO_DEVELOPMENT]),
+            chat_id=update.callback_query.message.chat_id,
+            reply_markup=sl.get_more_inline_keyboard('https://spaixel.com/page/logo_design'),
+            parse_mode=ParseMode.HTML,
+        )
+
 
 # --------------------------------------------------------------
 # 👇 Логика ответов бота при работе с разделом FAQ 👇

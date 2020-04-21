@@ -5,7 +5,6 @@ from .service_btn import *
 
 
 def get_service_inline_keyboard():
-
     keyboard = [
         [
             InlineKeyboardButton(SERVICE_TITLE[CB_B_SITE_DEVELOPMENT], callback_data=CB_B_SITE_DEVELOPMENT),
@@ -30,3 +29,12 @@ def get_service_inline_keyboard():
 
     return InlineKeyboardMarkup(keyboard)
 
+
+def get_more_inline_keyboard(link):
+    keyboard = [
+        [
+            InlineKeyboardButton(text=SERVICE_TITLE[CB_B_MORE], url=link),
+        ],
+    ]
+
+    return InlineKeyboardMarkup(keyboard)

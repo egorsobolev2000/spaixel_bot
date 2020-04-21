@@ -16,7 +16,7 @@ def read_json(username):
 
 
 def send(username, message='s'):
-    """ Функция опоощения на почту при N событии """
+    """ Функция оповещения на почту при N событии """
 
     login = MAIL
     password = PASSWORD
