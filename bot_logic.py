@@ -279,6 +279,24 @@ def main_callback_handler(update: Update, context: CallbackContext):
             parse_mode=ParseMode.HTML,
         )
 
+    # Вызов описания услуг по оформленние сообщества
+    elif data == sb.CB_B_DESIGN_VK_GROUPS:
+        context.bot.send_message(
+            text=INLINE_DATA.get(sb.SERVICE_TITLE[sb.CB_B_DESIGN_VK_GROUPS]),
+            chat_id=update.callback_query.message.chat_id,
+            # reply_markup=sl.get_more_inline_keyboard('https://spaixel.com/page/logo_design'),
+            parse_mode=ParseMode.HTML,
+        )
+
+    # Вызов описания услуг по разработке бота
+    elif data == sb.CB_B_BOT_DEVELOPMENT:
+        context.bot.send_message(
+            text=INLINE_DATA.get(sb.SERVICE_TITLE[sb.CB_B_BOT_DEVELOPMENT]),
+            chat_id=update.callback_query.message.chat_id,
+            # reply_markup=sl.get_more_inline_keyboard('https://spaixel.com/page/logo_design'),
+            parse_mode=ParseMode.HTML,
+        )
+
 
 # --------------------------------------------------------------
 # 👇 Логика ответов бота при работе с разделом FAQ 👇

@@ -93,13 +93,13 @@ def do_start(update: Update, context: CallbackContext):
         action=ChatAction.TYPING
     )
     update.message.reply_text(
-        text=f"Привет, {update.message.chat.first_name}! 👋\nЯ <b>{context.bot.get_me().first_name}</b>.\nС радостью отвечу "
+        text=f"Привет, {update.message.chat.first_name}! 👋\nЯ есть <b>{context.bot.get_me().first_name}</b>.\nС радостью отвечу "
              f"на твои вопросы.",
         reply_markup=get_base_keyboard_btns(),
         parse_mode=ParseMode.HTML,
     )
 
-    # Прикрепил к приветственному сообщению главное меню
+    # Прикрепил к приветственному сообщению главное меню Spaixel
     get_main_inline_menu(update)
     info_collector(update.message)
     print(f'Обработка команды `/start` — ', ColorsPrint('OK', 'suc').do_colored())
