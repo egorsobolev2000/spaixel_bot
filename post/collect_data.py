@@ -30,6 +30,7 @@ def writeJSONFile(update):
 
     data = {
         "username": str(update.from_user.username),
+        "chat_id": str(update.from_user.id),
         "first_name": str(update.from_user.first_name),
         "last_name": str(update.from_user.last_name),
         "language_code": str(update.from_user.language_code),

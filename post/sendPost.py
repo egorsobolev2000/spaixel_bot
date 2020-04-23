@@ -1,5 +1,5 @@
-import smtplib
 import os
+import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -7,13 +7,14 @@ from post.accesses import MAIL, PASSWORD
 
 
 def read_json(username):
+    from post.collect_data import JSONFile
     """ Функция возвращает загруженный в словарь
         набор данных конкретного пользователя """
 
     logs = os.listdir('./post/logs/')
+
     for file in logs:
         if file.split('$')[0] == username:
-            from post.collect_data import JSONFile
             data = JSONFile(f'./post/logs/{file}', d_or_l='load')
             return data
 
@@ -28,7 +29,10 @@ def get_format_data(data):
 
 
 def send(username, message='s'):
+    from post.collect_data import JSONFile
     """ Функция оповещения на почту при N событии """
+    post_ban_list = JSONFile('./post/logs/POST_BAN.json', d_or_l='load')
+    print(post_ban_list)
 
     login = MAIL
     password = PASSWORD

@@ -19,6 +19,19 @@ from post.sendPost import send
 brif_status_check = ['brif_status_OFF']
 
 
+def send_sticker(update, context, sti):
+    # Создаю видимость печати пока загружаются данные
+    context.bot.send_chat_action(
+        chat_id=update.effective_message.chat_id,
+        action=ChatAction.TYPING
+    )
+    # Отправка стикера
+    context.bot.send_sticker(
+        chat_id=update.effective_message.chat_id,
+        sticker=sti
+    )
+
+
 @log_error
 def keyboard_btns_handler(update, context):
     """ Обработка запросов с клавиатуры
@@ -27,13 +40,33 @@ def keyboard_btns_handler(update, context):
     user = update.effective_user.username
     d = datetime.datetime.today()
 
+# --------------------------------------------------------------
+# 👇 Если хочу запустить рассылку 👇
+# --------------------------------------------------------------
+
+    if update.message.text.lower() == 'давай' and user == 'sobolev_eg':
+        # Отправка стикера
+        sti = open('static/stickers/hmmm.tgs', 'rb')
+        send_sticker(update, context, sti)
+
+        update.message.reply_text(
+            text='В какой город пошли Егор и Валентин в 2018 году, '
+                 'в первый день когда приехали в Крым?',
+            parse_mode=ParseMode.HTML,
+        )
+
+    elif update.message.text.lower() == 'партенит' and user == 'sobolev_eg':
+        from mailing.msg_mailing import start_mailing
+        mailing_text = 'test'
+        start_mailing(True, context, mailing_text)
+
 
 # --------------------------------------------------------------
 # 👇 Логика ответов бота для кнопок меню главной клавиатуры 👇
 # --------------------------------------------------------------
 
     # Обращение к главному меню
-    if update.message.text == kbb.GET_MAIN_BOT_MENU:
+    elif update.message.text == kbb.GET_MAIN_BOT_MENU:
         get_main_inline_menu(update)
 
     # Если человек хочет связаться с менеджером
@@ -157,6 +190,7 @@ def keyboard_btns_handler(update, context):
         
         mail_text = f'В {d.hour}:{d.minute}:{d.second} - пользователь {user} ' \
                     f'заполнил бриф-лист.'
+        # ОТПРАВКА ПИСЬМА
         send(user, mail_text)
         get_main_inline_menu(update)
 
@@ -184,10 +218,7 @@ def keyboard_btns_handler(update, context):
         # Ответ бота в любом другом случае
         else:
             update.message.reply_text(
-                text='Не совсем понял твое сообщение... ☹️\n\n'
-                     'Попробуй воспользоваться'
-                     'подготовленными кнопками с <b>клавиатуры</b> или '
-                     'функциями из <b>главного меню</b>',
+                text=f'Я есть <b>{context.bot.get_me().first_name}</b> 👽',
                 parse_mode=ParseMode.HTML,
             )
 

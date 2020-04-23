@@ -1,4 +1,5 @@
 import os
+import time
 import conf
 from telegram import Bot
 
@@ -92,8 +93,9 @@ def do_start(update: Update, context: CallbackContext):
         chat_id=update.effective_message.chat_id,
         action=ChatAction.TYPING
     )
+    print(update)
     update.message.reply_text(
-        text=f"Привет, {update.message.chat.first_name}! 👋\nЯ есть <b>{context.bot.get_me().first_name}</b>.\nС радостью отвечу "
+        text=f"Привет, {update.message.chat.first_name} 👋\nЯ есть <b>{context.bot.get_me().first_name}</b>\nС радостью отвечу "
              f"на твои вопросы.",
         reply_markup=get_base_keyboard_btns(),
         parse_mode=ParseMode.HTML,
@@ -152,6 +154,6 @@ def main():
     updater.start_polling()
     updater.idle()
 
-
 if __name__ == '__main__':
     main()
+
