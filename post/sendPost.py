@@ -2,10 +2,9 @@ import os
 import time
 import smtplib
 from email.mime.text import MIMEText
+from telegram import ReplyKeyboardRemove
 from email.mime.multipart import MIMEMultipart
-
 from post.accesses import MAIL, PASSWORD
-
 
 
 def read_json(username):
@@ -36,29 +35,32 @@ def plus_post_bun(post_ban_list, username):
     JSONFile(f'./post/logs/POST_BAN.json', post_ban_list)
 
 
-def send_to_black_list(username):
+def send_to_black_list(username, update, context):
     from post.collect_data import JSONFile
     user_ban_list = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
     user_ban_list.update({username: time.strftime("%x-%X", time.localtime())})
     JSONFile(f'./post/BLACK_LIST.json', user_ban_list)
+    send(username, update, context, 'black_list')
 
 
-def send(username, message='s'):
+def send(username, update, context, message='new_user'):
     from post.collect_data import JSONFile
+    from bot_logic import typing
     """ Функция оповещения на почту при N событии """
     post_ban_list = JSONFile('./post/logs/POST_BAN.json', d_or_l='load')
-    if username not in post_ban_list.keys():
+    if username not in post_ban_list.keys() \
+            or post_ban_list[username][1].split('-')[0] != time.strftime("%x", time.localtime()) \
+            or message == 'black_list':
         login = MAIL
         password = PASSWORD
 
         msg = MIMEMultipart('alternative')
         msg['From'] = login
         msg['To'] = login
-        if message == 's':
+        if message == 'new_user':
             msg['Subject'] = f'Новый пользователь @{username} 👍'
             body = f'Зафиксирована активность нового пользователя бота @{username}'
-        else:
-            msg['Subject'] = f'📮 Новая заявка с бота от @{username}'
+        elif message == 'request' or 'brif_list':
             data = read_json(username)
             user_msg, user_actions = get_format_data(data['messages']), get_format_data(data['actions'])
 
@@ -66,13 +68,22 @@ def send(username, message='s'):
                    f'<br><br>{user_msg}<br><br>' \
                    f'<b>История действий пользователя</b>' \
                    f'<br><br>{user_actions}<br><br>'
+            if message == 'request':
+                msg['Subject'] = f'📮 Новая заявка с бота от @{username}'
+            elif message == 'brif_list':
+                msg['Subject'] = f'Пользователь @{username} заполнил бриф 📜'
+            elif message == 'black_list':
+                msg['Subject'] = f'⚫️ Пользователь @{username} загремел в черный список ⚫️'
 
         msg.attach(MIMEText(body, 'html'))
+        # Создаю видимость печати пока загружаются данные
+        typing(update, context)
 
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(login, password)
         print("Отправка письма...")
+
         server.send_message(msg)
         server.quit()
 
@@ -99,6 +110,12 @@ def send(username, message='s'):
 
     elif post_ban_list.get(username)[0] == 4:
         print(f'Занесение в черный список пользователя {username}')
-        send_to_black_list(username)
-        return 'ЧЕРТ! МЕНЯ ДВАЖДЫ ПРОСИТЬ НЕ НУЖНО!\n\n' \
-               'Я обиделся на тебя и добавляю тебя в черный список 😡'
+        # Создаю видимость печати пока загружаются данные
+        update.message.reply_text(
+            text='ЧЕРТ! МЕНЯ ДВАЖДЫ ПРОСИТЬ НЕ НУЖНО!',
+            reply_markup=ReplyKeyboardRemove(),
+        )
+        # Создаю видимость печати пока загружаются данные
+        typing(update, context)
+        send_to_black_list(username, update, context)
+        return 'Я обиделся на тебя и добавляю тебя в черный список 😡'

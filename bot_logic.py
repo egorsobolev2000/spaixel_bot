@@ -19,12 +19,16 @@ from post.sendPost import send
 brif_status_check = ['brif_status_OFF']
 
 
-def send_sticker(update, context, sti):
+def typing(update, context):
     # Создаю видимость печати пока загружаются данные
     context.bot.send_chat_action(
         chat_id=update.effective_message.chat_id,
         action=ChatAction.TYPING
     )
+
+
+def send_sticker(update, context, sti):
+    typing(update, context)
     # Отправка стикера
     context.bot.send_sticker(
         chat_id=update.effective_message.chat_id,
@@ -57,7 +61,7 @@ def keyboard_btns_handler(update, context):
 
     elif update.message.text.lower() == 'партенит' and user == 'sobolev_eg':
         from mailing.msg_mailing import start_mailing
-        mailing_text = 'test'
+        mailing_text = 'Тествоый пример рассылки'
         start_mailing(True, context, mailing_text)
 
 
@@ -85,8 +89,8 @@ def keyboard_btns_handler(update, context):
 
     # Хочет оставить заявку
     elif update.message.text == kbb.REQ_BTN:
-        mail_text = f"Пользователь {user} оставил заявку в боте - {d}"
-        ans_text = send(user, mail_text)
+        ans_text = send(user, update, context, 'request')
+        # Создаю видимость печати пока загружаются данные
         update.message.reply_text(
             text=ans_text
         )
@@ -187,10 +191,8 @@ def keyboard_btns_handler(update, context):
             parse_mode=ParseMode.HTML,
         )
 
-        mail_text = f'В {d.hour}:{d.minute}:{d.second} - пользователь {user} ' \
-                    f'заполнил бриф-лист.'
         # ОТПРАВКА ПИСЬМА
-        send(user, mail_text)
+        send(user, 'brif_list')
         get_main_inline_menu(update)
 
 
