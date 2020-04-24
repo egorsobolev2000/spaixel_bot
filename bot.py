@@ -1,5 +1,4 @@
 import os
-import time
 import conf
 from telegram import Bot
 
@@ -21,6 +20,7 @@ from post.collect_data import info_collector
 from modules.home_menu.home_logic import get_main_inline_menu
 from modules.keyboard.keyboard_logic import get_base_keyboard_btns
 from post.collect_data import JSONFile
+
 
 search = Searcher()
 
@@ -77,49 +77,67 @@ def inline_handler(update: Update, context: CallbackContext):
 
 @log_error
 def do_start(update: Update, context: CallbackContext):
-    sti = open('static/stickers/hello.tgs', 'rb')
-    # Создаю видимость печати пока загружаются данные
-    context.bot.send_chat_action(
-        chat_id=update.effective_message.chat_id,
-        action=ChatAction.TYPING
-    )
-    # Отправка стикера
-    context.bot.send_sticker(
-        chat_id=update.effective_message.chat_id,
-        sticker=sti
-    )
-    # Создаю видимость печати пока загружаются данные
-    context.bot.send_chat_action(
-        chat_id=update.effective_message.chat_id,
-        action=ChatAction.TYPING
-    )
-    print(update)
-    update.message.reply_text(
-        text=f"Привет, {update.message.chat.first_name} 👋\nЯ есть <b>{context.bot.get_me().first_name}</b>\nС радостью отвечу "
-             f"на твои вопросы.",
-        reply_markup=get_base_keyboard_btns(),
-        parse_mode=ParseMode.HTML,
-    )
+    user = update.effective_user
+    BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
 
-    # Прикрепил к приветственному сообщению главное меню Spaixel
-    get_main_inline_menu(update)
-    info_collector(update.message)
-    print(f'Обработка команды `/start` — ', ColorsPrint('OK', 'suc').do_colored())
+    if user.username not in BLACK_LIST.keys():
+        sti = open('static/stickers/hello.tgs', 'rb')
+        # Создаю видимость печати пока загружаются данные
+        context.bot.send_chat_action(
+            chat_id=update.effective_message.chat_id,
+            action=ChatAction.TYPING
+        )
+        # Отправка стикера
+        context.bot.send_sticker(
+            chat_id=update.effective_message.chat_id,
+            sticker=sti
+        )
+        # Создаю видимость печати пока загружаются данные
+        context.bot.send_chat_action(
+            chat_id=update.effective_message.chat_id,
+            action=ChatAction.TYPING
+        )
+        update.message.reply_text(
+            text=f"Привет, {update.message.chat.first_name} 👋\nЯ есть <b>{context.bot.get_me().first_name}</b>\nС радостью отвечу "
+                 f"на твои вопросы.",
+            reply_markup=get_base_keyboard_btns(),
+            parse_mode=ParseMode.HTML,
+        )
+
+        # Прикрепил к приветственному сообщению главное меню Spaixel
+        get_main_inline_menu(update)
+        info_collector(update.message)
+        print(f'Обработка команды `/start` — ', ColorsPrint('OK', 'suc').do_colored())
+    else:
+        update.message.reply_text(
+            text=f"Уходи, {user.first_name} {user.last_name} 🙄"
+        )
 
 
 @log_error
 def do_echo(update: Update, context: CallbackContext):
-    # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
-    keyboard_btns_handler(update, context)
-    info_collector(update.message)
+    user = update.effective_user.username
+    BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
+
+    if user not in BLACK_LIST.keys():
+        # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
+        keyboard_btns_handler(update, context)
+        info_collector(update.message)
+    else:
+        pass
 
 
 @log_error
 def do_help(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        text="Здесь будет информация о боте",
-    )
-    print(f'Обработка команды `/help` — ', ColorsPrint('OK', 'suc').do_colored())
+    user = update.effective_user.username
+    BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
+    if user not in BLACK_LIST.keys():
+        update.message.reply_text(
+            text="Здесь будет информация о боте",
+        )
+        print(f'Обработка команды `/help` — ', ColorsPrint('OK', 'suc').do_colored())
+    else:
+        pass
 
 
 @log_error
@@ -153,6 +171,7 @@ def main():
 
     updater.start_polling()
     updater.idle()
+
 
 if __name__ == '__main__':
     main()

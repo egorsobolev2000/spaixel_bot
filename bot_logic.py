@@ -85,12 +85,11 @@ def keyboard_btns_handler(update, context):
 
     # Хочет оставить заявку
     elif update.message.text == kbb.REQ_BTN:
-        update.message.reply_text(
-            text="Отправил заявку на почту разработчика ✅"
-        )
-
         mail_text = f"Пользователь {user} оставил заявку в боте - {d}"
-        send(user, mail_text)
+        ans_text = send(user, mail_text)
+        update.message.reply_text(
+            text=ans_text
+        )
 
 
 # --------------------------------------------------------------
@@ -187,7 +186,7 @@ def keyboard_btns_handler(update, context):
             reply_markup=kbl.get_base_keyboard_btns(),
             parse_mode=ParseMode.HTML,
         )
-        
+
         mail_text = f'В {d.hour}:{d.minute}:{d.second} - пользователь {user} ' \
                     f'заполнил бриф-лист.'
         # ОТПРАВКА ПИСЬМА

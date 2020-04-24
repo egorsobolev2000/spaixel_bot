@@ -11,7 +11,7 @@ def start_mailing(status, context, mailing_text):
         print(ColorsPrint('Начинаю рассылку\n', "inf").do_colored())
         print('-' * 20)
         for file in logs:
-            if file != 'USERS.json':
+            if file != 'USERS.json' and file != 'POST_BAN.json':
                 try:
                     data = JSONFile(f'./post/logs/{file}', d_or_l='load')
                     chat_id = data['chat_id']
