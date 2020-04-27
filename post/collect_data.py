@@ -57,7 +57,7 @@ def editJSONFile(username, key, value):
             break
 
 
-def info_collector(update, m_or_a='m', data='data'):
+def info_collector(update, context, m_or_a='m', data='data', full_update='full_update'):
 
     def action_controller(un):
         users = JSONFile('./post/logs/USERS.json', d_or_l='load')
@@ -71,8 +71,8 @@ def info_collector(update, m_or_a='m', data='data'):
                 action = data
                 editJSONFile(un, 'actions', action)
         else:
-            print('Создается файл')
-            send(username)
+            print(f'Создается файл для {username}')
+            send(username, full_update, context)
             writeJSONFile(update)
             users.get('users').append(username)
             # Вызываю запись в JSON файл

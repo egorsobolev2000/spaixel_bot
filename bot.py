@@ -81,7 +81,7 @@ def do_start(update: Update, context: CallbackContext):
     BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
 
     if user.username not in BLACK_LIST.keys():
-        sti = open('static/stickers/hello.tgs', 'rb')
+        sti = open('static/stickers/hello.webp', 'rb')
         # Создаю видимость печати пока загружаются данные
         context.bot.send_chat_action(
             chat_id=update.effective_message.chat_id,
@@ -106,11 +106,23 @@ def do_start(update: Update, context: CallbackContext):
 
         # Прикрепил к приветственному сообщению главное меню Spaixel
         get_main_inline_menu(update)
-        info_collector(update.message)
+
+        info_collector(update.message, context, full_update=update)
         print(f'Обработка команды `/start` — ', ColorsPrint('OK', 'suc').do_colored())
     else:
+        # Создаю видимость печати пока загружаются данные
+        context.bot.send_chat_action(
+            chat_id=update.effective_message.chat_id,
+            action=ChatAction.TYPING
+        )
+        sti = open('static/stickers/go_away.webp', 'rb')
+        # Отправка стикера
+        context.bot.send_sticker(
+            chat_id=update.effective_message.chat_id,
+            sticker=sti
+        )
         update.message.reply_text(
-            text=f"Уходи, {user.first_name} {user.last_name} 🙄"
+            text=f"Уходи, {user.first_name} {user.last_name}"
         )
 
 
@@ -122,7 +134,7 @@ def do_echo(update: Update, context: CallbackContext):
     if user not in BLACK_LIST.keys():
         # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
         keyboard_btns_handler(update, context)
-        info_collector(update.message)
+        info_collector(update.message, context)
     else:
         pass
 

@@ -89,7 +89,7 @@ def keyboard_btns_handler(update, context):
 
     # Хочет оставить заявку
     elif update.message.text == kbb.REQ_BTN:
-        ans_text = send(user, update, context, 'request')
+        ans_text = send(user, update, context, message='request')
         # Создаю видимость печати пока загружаются данные
         update.message.reply_text(
             text=ans_text
@@ -150,7 +150,7 @@ def keyboard_btns_handler(update, context):
 
     # Если человек прерывает заполнение брифа
     elif update.message.text == brif_btn.ABORT_FILLING:
-        sti = open('static/stickers/wtf.tgs', 'rb')
+        sti = open('static/stickers/fuck.webp', 'rb')
         # Создаю видимость печати пока загружаются данные
         context.bot.send_chat_action(
             chat_id=update.effective_message.chat_id,
@@ -174,17 +174,9 @@ def keyboard_btns_handler(update, context):
         # Выключение режима заполнения брифа
         brif_status_check[0] = 'brif_status_OFF'
 
-        sti = open('static/stickers/not_bad.tgs', 'rb')
-        # Создаю видимость печати пока загружаются данные
-        context.bot.send_chat_action(
-            chat_id=update.effective_message.chat_id,
-            action=ChatAction.TYPING
-        )
-        # Отправка стикера
-        context.bot.send_sticker(
-            chat_id=update.effective_message.chat_id,
-            sticker=sti
-        )
+        sti = open('static/stickers/wow.webp', 'rb')
+        send_sticker(update, context, sti)
+
         update.message.reply_text(
             text='Поздравляю! Бриф-лист успешно заполнен!',
             reply_markup=kbl.get_base_keyboard_btns(),
@@ -192,7 +184,7 @@ def keyboard_btns_handler(update, context):
         )
 
         # ОТПРАВКА ПИСЬМА
-        send(user, 'brif_list')
+        send(user, update, context, 'brif_list')
         get_main_inline_menu(update)
 
 
@@ -231,7 +223,7 @@ def main_callback_handler(update: Update, context: CallbackContext):
     query = update.callback_query
     data = query.data
     username = query.message.chat
-    info_collector(username, 'a', data)
+    info_collector(username, context, 'a', data)
 
 # --------------------------------------------------------------
 # 👇 Логика ответов бота при работе с БРИФОМ 👇

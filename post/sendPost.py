@@ -4,6 +4,7 @@ import smtplib
 from email.mime.text import MIMEText
 from telegram import ReplyKeyboardRemove
 from email.mime.multipart import MIMEMultipart
+
 from post.accesses import MAIL, PASSWORD
 
 
@@ -46,6 +47,7 @@ def send_to_black_list(username, update, context):
 def send(username, update, context, message='new_user'):
     from post.collect_data import JSONFile
     from bot_logic import typing
+    from bot_logic import send_sticker
     """ Функция оповещения на почту при N событии """
     post_ban_list = JSONFile('./post/logs/POST_BAN.json', d_or_l='load')
     if username not in post_ban_list.keys() \
@@ -53,7 +55,6 @@ def send(username, update, context, message='new_user'):
             or message == 'black_list':
         login = MAIL
         password = PASSWORD
-
         msg = MIMEMultipart('alternative')
         msg['From'] = login
         msg['To'] = login
@@ -61,6 +62,7 @@ def send(username, update, context, message='new_user'):
             msg['Subject'] = f'Новый пользователь @{username} 👍'
             body = f'Зафиксирована активность нового пользователя бота @{username}'
         elif message == 'request' or 'brif_list':
+
             data = read_json(username)
             user_msg, user_actions = get_format_data(data['messages']), get_format_data(data['actions'])
 
@@ -87,34 +89,43 @@ def send(username, update, context, message='new_user'):
         server.send_message(msg)
         server.quit()
 
-        post_ban_list.update({username: [1, time.strftime("%x-%X", time.localtime())]})
-        JSONFile(f'./post/logs/POST_BAN.json', post_ban_list)
+        if message != 'new_user' and message != 'black_list':
+            post_ban_list.update({username: [1, time.strftime("%x-%X", time.localtime())]})
+            JSONFile(f'./post/logs/POST_BAN.json', post_ban_list)
 
         print('\x1b[6;30;42m' + 'Email successfully sent' + '\x1b[0m')
         return 'Отправил заявку на почту разработчика ✅'
     elif post_ban_list.get(username)[0] == 1:
-        print('Попытка спама')
+        print(f'Попытка спама {username}')
         plus_post_bun(post_ban_list, username)
         return 'Ты уже отправлял заявку сегодня'
 
     elif post_ban_list.get(username)[0] == 2:
-        print('Попытка спама')
+        print(f'Попытка спама {username}')
+        sti = open('static/stickers/yyyyy.webp', 'rb')
+        send_sticker(update, context, sti)
         plus_post_bun(post_ban_list, username)
         return 'Я же сказал, что ты уже отправлял сегодня заявку 🤨\n' \
                'Повторную заявку можно отправить только через 24 часа'
 
     elif post_ban_list.get(username)[0] == 3:
-        print('Попытка спама')
+        print(f'Попытка спама {username}')
         plus_post_bun(post_ban_list, username)
         return 'Так, еще раз и в черный список 😑'
 
     elif post_ban_list.get(username)[0] == 4:
         print(f'Занесение в черный список пользователя {username}')
-        # Создаю видимость печати пока загружаются данные
+        sti = open('static/stickers/FUUUUCK.webp', 'rb')
+        send_sticker(update, context, sti)
         update.message.reply_text(
             text='ЧЕРТ! МЕНЯ ДВАЖДЫ ПРОСИТЬ НЕ НУЖНО!',
             reply_markup=ReplyKeyboardRemove(),
         )
+
+        # Удаляю из списка суточного почтового бана
+        post_ban_list.pop(username)
+        JSONFile(f'./post/logs/POST_BAN.json', post_ban_list)
+
         # Создаю видимость печати пока загружаются данные
         typing(update, context)
         send_to_black_list(username, update, context)
