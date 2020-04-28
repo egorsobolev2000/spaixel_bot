@@ -21,11 +21,26 @@ from modules.home_menu.home_logic import get_main_inline_menu
 from modules.keyboard.keyboard_logic import get_base_keyboard_btns
 from post.collect_data import JSONFile
 
+from modules.admin.admin_logic import admin, admin_logic
+from modules.admin.admin_keyboard_handler import admin_keyboard_handler
+
 
 search = Searcher()
 
 
 @log_error
+def black_list_check(func):
+    def wrapped(update, context):
+        BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
+        if update.effective_user.username not in BLACK_LIST.keys():
+            return func(update, context)
+        else:
+            pass
+    return wrapped
+
+
+@log_error
+@black_list_check
 def inline_handler(update: Update, context: CallbackContext):
     """ Функкия логики и доступности Inline режима """
 
@@ -127,16 +142,16 @@ def do_start(update: Update, context: CallbackContext):
 
 
 @log_error
+@black_list_check
 def do_echo(update: Update, context: CallbackContext):
-    user = update.effective_user.username
-    BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
-
-    if user not in BLACK_LIST.keys():
-        # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
+    ADMIN_STATUS = JSONFile('./modules/admin/admin.json', d_or_l='load')
+    # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
+    if ADMIN_STATUS['status'] == 'OFF':
         keyboard_btns_handler(update, context)
-        info_collector(update.message, context)
-    else:
-        pass
+    elif ADMIN_STATUS['status'] == 'ON':
+        admin_keyboard_handler(update, context)
+
+    info_collector(update.message, context)
 
 
 @log_error
@@ -145,11 +160,22 @@ def do_help(update: Update, context: CallbackContext):
     BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
     if user not in BLACK_LIST.keys():
         update.message.reply_text(
-            text="Здесь будет информация о боте",
+            text='Он есть Дред 💭 \n\n'        
+            'Обратиться за помощью:\n\n'    
+                 
+            'Разработчик -> @sobolev_eg\n'
+            'Сайт -> https://spaixel.com\n',
         )
         print(f'Обработка команды `/help` — ', ColorsPrint('OK', 'suc').do_colored())
     else:
         pass
+
+
+@log_error
+@black_list_check
+@admin
+def get_admin(update: Update, context: CallbackContext):
+    admin_logic(update, context)
 
 
 @log_error
@@ -178,6 +204,7 @@ def main():
     dp.add_handler(InlineQueryHandler(inline_handler))
     dp.add_handler(CommandHandler("start", do_start))
     dp.add_handler(CommandHandler("help", do_help))
+    dp.add_handler(CommandHandler("admin", get_admin))
     dp.add_handler(MessageHandler(Filters.text, do_echo))
     dp.add_handler(CallbackQueryHandler(callback=main_callback_handler))
 

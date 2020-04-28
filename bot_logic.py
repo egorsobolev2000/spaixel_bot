@@ -62,7 +62,16 @@ def keyboard_btns_handler(update, context):
     elif update.message.text.lower() == 'партенит' and user == 'sobolev_eg':
         from mailing.msg_mailing import start_mailing
         mailing_text = 'Тествоый пример рассылки'
-        start_mailing(True, context, mailing_text)
+        sd, usr_l, bu = start_mailing(True, context, mailing_text)
+
+        update.message.reply_text(
+            text=f'Рассылка завершена\n\n'
+                 f'Успешно доставленно — <em><b>{sd}</b></em>\n'
+                 f'Из — <em><b>{usr_l}</b></em>\n'
+                 f'В черном списке — <em><b>{bu}</b></em>',
+            parse_mode=ParseMode.HTML,
+        )
+
 
 
 # --------------------------------------------------------------
