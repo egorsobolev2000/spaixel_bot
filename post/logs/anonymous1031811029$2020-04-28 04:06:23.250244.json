@@ -1,0 +1,16 @@
+{
+   "username": "anonymous1031811029",
+   "chat_id": "1031811029",
+   "first_name": "Анастасия",
+   "last_name": "None",
+   "language_code": "ru",
+   "messages": [
+      {
+         "4:6:23": "/start"
+      },
+      {
+         "4:6:24": "/start"
+      }
+   ],
+   "actions": []
+}
