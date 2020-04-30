@@ -24,12 +24,18 @@ from post.collect_data import JSONFile
 from modules.admin.admin_logic import admin, admin_logic
 from modules.admin.admin_keyboard_handler import admin_keyboard_handler
 
+from modules.mailing.mailing_logic import mailing_user, mailing_mode
+from modules.mailing.mailing_keyboard_handler import mailing_keyboard_handler
+
 
 search = Searcher()
 
 
 @log_error
 def black_list_check(func):
+    """ Функция ДЕКОРАТОР проверяет не находится ли
+        пользователь в черном списке бота """
+
     def wrapped(update, context):
         BLACK_LIST = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
         if update.effective_user.username not in BLACK_LIST.keys():
@@ -145,9 +151,12 @@ def do_start(update: Update, context: CallbackContext):
 @black_list_check
 def do_echo(update: Update, context: CallbackContext):
     ADMIN_STATUS = JSONFile('./modules/admin/admin.json', d_or_l='load')
+    MAILING_STATUS = JSONFile('./modules/mailing/mailing.json', d_or_l='load')
     # Вызываю обработчик всех возможных введенных ключевых слов с клавиатуры
-    if ADMIN_STATUS['status'] == 'OFF':
+    if ADMIN_STATUS['status'] == 'OFF' and MAILING_STATUS['status'] == 'OFF':
         keyboard_btns_handler(update, context)
+    elif MAILING_STATUS['status'] == 'ON':
+        mailing_keyboard_handler(update, context)
     elif ADMIN_STATUS['status'] == 'ON':
         admin_keyboard_handler(update, context)
 
@@ -169,6 +178,13 @@ def do_help(update: Update, context: CallbackContext):
         print(f'Обработка команды `/help` — ', ColorsPrint('OK', 'suc').do_colored())
     else:
         pass
+
+
+@log_error
+@black_list_check
+@mailing_user
+def do_mailing(update: Update, context: CallbackContext):
+    mailing_mode(update, context)
 
 
 @log_error
@@ -205,6 +221,7 @@ def main():
     dp.add_handler(CommandHandler("start", do_start))
     dp.add_handler(CommandHandler("help", do_help))
     dp.add_handler(CommandHandler("admin", get_admin))
+    dp.add_handler(CommandHandler("mailing", do_mailing))
     dp.add_handler(MessageHandler(Filters.text, do_echo))
     dp.add_handler(CallbackQueryHandler(callback=main_callback_handler))
 

@@ -45,41 +45,11 @@ def keyboard_btns_handler(update, context):
     d = datetime.datetime.today()
 
 # --------------------------------------------------------------
-# 👇 Если хочу запустить рассылку 👇
-# --------------------------------------------------------------
-
-    if update.message.text.lower() == 'давай' and user == 'sobolev_eg':
-        # Отправка стикера
-        sti = open('static/stickers/hmmm.tgs', 'rb')
-        send_sticker(update, context, sti)
-
-        update.message.reply_text(
-            text='В какой город пошли Егор и Валентин в 2018 году, '
-                 'в первый день когда приехали в Крым?',
-            parse_mode=ParseMode.HTML,
-        )
-
-    elif update.message.text.lower() == 'партенит' and user == 'sobolev_eg':
-        from mailing.msg_mailing import start_mailing
-        mailing_text = 'Тествоый пример рассылки'
-        sd, usr_l, bu = start_mailing(True, context, mailing_text)
-
-        update.message.reply_text(
-            text=f'Рассылка завершена\n\n'
-                 f'Успешно доставленно — <em><b>{sd}</b></em>\n'
-                 f'Из — <em><b>{usr_l}</b></em>\n'
-                 f'В черном списке — <em><b>{bu}</b></em>',
-            parse_mode=ParseMode.HTML,
-        )
-
-
-
-# --------------------------------------------------------------
 # 👇 Логика ответов бота для кнопок меню главной клавиатуры 👇
 # --------------------------------------------------------------
 
     # Обращение к главному меню
-    elif update.message.text == kbb.GET_MAIN_BOT_MENU:
+    if update.message.text == kbb.GET_MAIN_BOT_MENU:
         get_main_inline_menu(update)
 
     # Если человек хочет связаться с менеджером

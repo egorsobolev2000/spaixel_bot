@@ -48,7 +48,7 @@ def admin_keyboard_handler(update, context):
         )
 
     # Посмотреть кто в черном списке
-    if update.message.text == akbb.WATCH_BLACK_LIST:
+    elif update.message.text == akbb.WATCH_BLACK_LIST:
         user_ban_list = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
         user_list = list_convector(user_ban_list.keys())
         update.message.reply_text(
@@ -145,6 +145,11 @@ def admin_keyboard_handler(update, context):
             user_ban_list = JSONFile('./post/BLACK_LIST.json', d_or_l='load')
             user_ban_list.pop(msg[1])
             JSONFile('./post/BLACK_LIST.json', user_ban_list)
+
+            user_list = JSONFile(f'./post/logs/USERS.json', d_or_l='load')
+            user_list['users'].append(msg[1])
+            JSONFile(f'./post/logs/USERS.json', user_list)
+
             update.message.reply_text(
                 text='Хорошо, достал его в списка гандонов'
             )

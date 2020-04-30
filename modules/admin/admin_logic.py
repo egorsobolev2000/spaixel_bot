@@ -4,7 +4,7 @@ from .admin_keyboard.admin_keyboard_logic import get_admin_keyboard_btns
 
 def admin(func):
     """ Функция ДЕКОРАТОР которая проверяет является
-        ли человек админом и если да включает
+        ли человек админом и если ДА включает
         режим администратора """
 
     def wrapped(update, context):
