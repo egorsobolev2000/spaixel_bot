@@ -1,7 +1,8 @@
 {
    "users": [
-      "sobolev_eg"
+      "sobolev_eg",
+      "Gefio"
    ],
-   "text": "Какой-то текст для рассылки. Рассылка через графический интерфейс.",
-   "status": "OFF"
+   "text": "",
+   "status": "ON"
 }

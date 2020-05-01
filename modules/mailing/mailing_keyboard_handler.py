@@ -40,6 +40,8 @@ def mailing_keyboard_handler(update, context):
                      f'В черном списке — <em><b>{ubl}</b></em>',
                 parse_mode=ParseMode.HTML,
             )
+            mailing_file['text'] = ''
+            JSONFile('./modules/mailing/mailing.json', mailing_file)
         else:
             update.message.reply_text(
                 text='Вначале введи текст рассылки',
@@ -54,15 +56,17 @@ def mailing_keyboard_handler(update, context):
         )
 
     elif update.message.text.split()[0] == '@mailing':
+        # Подготовка текста
         msg = update.message.text.split()
         msg = msg[1:]
         mailing_text = ' '.join(msg)
+        # Запись текста
         mailing_file = JSONFile('./modules/mailing/mailing.json', d_or_l='load')
         mailing_file['text'] = mailing_text
         JSONFile('./modules/mailing/mailing.json', mailing_file)
+
         update.message.reply_text(
-            text='Угу, записал 🖊',
-            reply_markup=get_base_keyboard_btns()
+            text='Угу, записал 🖊'
         )
 
 

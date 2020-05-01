@@ -9,10 +9,15 @@ def get_admin_keyboard_btns():
     keyboard = [
         [
             KeyboardButton(WATCH_USER_LIST),
+            KeyboardButton(WATCH_MODERATOR_LIST),
         ],
         [
             KeyboardButton(WATCH_ADMIN_LIST),
             KeyboardButton(WATCH_BLACK_LIST),
+        ],
+        [
+            KeyboardButton(ADD_MODERATOR),
+            KeyboardButton(DEL_MODERATOR),
         ],
         [
             KeyboardButton(GET_USER_FROM_B_L),

@@ -58,6 +58,7 @@ def editJSONFile(username, key, value):
 
 
 def info_collector(update, context, m_or_a='m', data='data', full_update='full_update'):
+    """ Функция ПРОСЛУШИВАТЕЛЬ всех действий"""
 
     def action_controller(un):
         users = JSONFile('./post/logs/USERS.json', d_or_l='load')
@@ -71,12 +72,24 @@ def info_collector(update, context, m_or_a='m', data='data', full_update='full_u
                 action = data
                 editJSONFile(un, 'actions', action)
         else:
-            print(f'Создается файл для {username}')
-            send(username, full_update, context)
-            writeJSONFile(update)
-            users.get('users').append(username)
-            # Вызываю запись в JSON файл
-            JSONFile('./post/logs/USERS.json', users)
+            logs = os.listdir('./post/logs/')
+            log_users = []
+
+            for f in logs:
+                log_users.append(f.split('$')[0])
+
+            if username in log_users:
+                from modules.admin.admin_keyboard_handler import add_user
+                add_user(username, './post/logs/USERS.json')
+                message = update.text
+                editJSONFile(un, 'messages', message)
+            else:
+                print(f'Создается файл для {username}')
+                send(username, full_update, context)
+                writeJSONFile(update)
+                users.get('users').append(username)
+                # Вызываю запись в JSON файл
+                JSONFile('./post/logs/USERS.json', users)
 
     if m_or_a == 'a':
         username = update.username
